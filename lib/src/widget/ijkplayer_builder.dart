@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/flutter_ijkplayer.dart';
 
 /// Player builder, Inheritance of this class allows you to implement your own player
 typedef Widget IJKTextureBuilder(

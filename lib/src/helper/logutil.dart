@@ -1,4 +1,4 @@
-import 'package:flutter_ijkplayer/src/helper/config.dart';
+import 'package:fflutter_ijkvideo/src/helper/config.dart';
 
 /// IJKPlayer Log Util
 class LogUtils {

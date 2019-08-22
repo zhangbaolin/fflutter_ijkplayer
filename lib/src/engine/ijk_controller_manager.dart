@@ -1,5 +1,5 @@
-import 'package:flutter_ijkplayer/src/ijkplayer.dart';
-import 'package:flutter_ijkplayer/src/helper/logutil.dart';
+import 'package:fflutter_ijkvideo/src/ijkplayer.dart';
+import 'package:fflutter_ijkvideo/src/helper/logutil.dart';
 
 class IjkMediaPlayerManager {
   var _currentIndex = 1;
