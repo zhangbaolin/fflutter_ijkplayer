@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 import 'package:ijkplayer_example/i18n/i18n.dart';
 import 'package:photo/photo.dart';
 

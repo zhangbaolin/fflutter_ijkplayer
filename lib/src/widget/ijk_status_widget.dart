@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fflutter_ijkvideo/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 
 /// Construct a Widget based on the current status.
 typedef Widget StatusWidgetBuilder(

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fflutter_ijkvideo/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 import 'package:fflutter_ijkvideo/src/helper/full_screen_helper.dart';
 import 'package:fflutter_ijkvideo/src/helper/logutil.dart';
 import 'package:fflutter_ijkvideo/src/helper/time_helper.dart';

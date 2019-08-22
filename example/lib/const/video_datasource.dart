@@ -1,4 +1,4 @@
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 
 class VideoDataSource {
   static final springBootMenuM3u8 = DataSource.network(

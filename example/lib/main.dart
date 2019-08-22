@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 import 'package:ijkplayer_example/page/index.dart';
 import 'package:oktoast/oktoast.dart';
 

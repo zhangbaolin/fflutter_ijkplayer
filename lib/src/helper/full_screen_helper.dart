@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fflutter_ijkvideo/flutter_ijkplayer.dart';
+import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 
 class FullScreenHelper {
   static int getQuarterTurns(VideoInfo info, BuildContext context) {
