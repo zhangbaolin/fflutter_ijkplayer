@@ -137,7 +137,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
   }
 
   void _onTextureIdChange(int textureId) {
-    LogUtils.debug("onTextureChange $textureId");
+    // LogUtils.debug("onTextureChange $textureId");
     if (textureId != null) {
       startTimer();
     } else {
@@ -152,9 +152,14 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
     controllerSubscription.cancel();
     stopTimer();
     IjkManager.resetBrightness();
+    // 强制竖屏
+
     super.dispose();
   }
 
@@ -165,7 +170,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
     progressTimer?.cancel();
     progressTimer = Timer.periodic(Duration(milliseconds: 350), (timer) {
-      LogUtils.verbose("timer will call refresh info");
+      //   LogUtils.verbose("timer will call refresh info");
       controller.refreshVideoInfo();
     });
   }
@@ -223,6 +228,10 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       onPressed: () {
         if (isFull) {
           Navigator.pop(context);
+          print('取消全屏了啊');
+          // 强制竖屏
+          SystemChrome.setPreferredOrientations(
+              [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
         } else {
           showFullScreenIJKPlayer(
             context,
@@ -230,6 +239,11 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
             fullscreenControllerWidgetBuilder: fullscreenBuilder,
             fullScreenType: widget.fullScreenType,
           );
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.landscapeRight,
+            DeviceOrientation.landscapeLeft,
+          ]);
+          print('我要设置全屏了');
         }
       },
     );
@@ -283,7 +297,9 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
           ),
         );
 
-        if (this.widget.fullScreenType == FullScreenType.rotateBox && this.widget.currentFullScreenState && _overlayTurns != 0) {
+        if (this.widget.fullScreenType == FullScreenType.rotateBox &&
+            this.widget.currentFullScreenState &&
+            _overlayTurns != 0) {
           w = RotatedBox(
             child: w,
             quarterTurns: _overlayTurns,
@@ -298,6 +314,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
   void hideTooltip() {
     _tipOverlay?.remove();
+
     _tipOverlay = null;
   }
 
@@ -369,92 +386,100 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
   bool leftVerticalDrag;
 
   void _onVerticalDragStart(DragStartDetails details) {
-    verticalDragging = true;
-    var width = UIHelper.findGlobalRect(currentKey).width;
-    var dx =
-        UIHelper.globalOffsetToLocal(currentKey, details.globalPosition).dx;
-    leftVerticalDrag = dx / width <= 0.5;
+    //根据  横竖屏判断手势事件
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
+      //横屏的时候执行这些逻辑
+      verticalDragging = true;
+      var width = UIHelper.findGlobalRect(currentKey).width;
+      var dx =
+          UIHelper.globalOffsetToLocal(currentKey, details.globalPosition).dx;
+      leftVerticalDrag = dx / width <= 0.5;
+    }
   }
 
   void _onVerticalDragUpdate(DragUpdateDetails details) async {
-    if (verticalDragging == false) return;
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
+      if (verticalDragging == false) return;
 
-    String text = "";
-    IconData iconData = Icons.volume_up;
+      String text = "";
+      IconData iconData = Icons.volume_up;
+      print('滑动的详情：${details.globalPosition.dy}');
+      if (leftVerticalDrag == false) {
+        if (details.delta.dy > 0 && details.globalPosition.dy %2 == 0) {
+          await volumeDown();
+        } else if (details.delta.dy < 0 && details.globalPosition.dy % 2 == 0) {
+          await volumeUp();
+        }
 
-    if (leftVerticalDrag == false) {
-      if (details.delta.dy > 0) {
-        await volumeDown();
-      } else if (details.delta.dy < 0) {
-        await volumeUp();
-      }
+        var currentVolume = await getVolume();
 
-      var currentVolume = await getVolume();
+        if (currentVolume <= 0) {
+          iconData = Icons.volume_mute;
+        } else if (currentVolume < 50) {
+          iconData = Icons.volume_down;
+        } else {
+          iconData = Icons.volume_up;
+        }
 
-      if (currentVolume <= 0) {
-        iconData = Icons.volume_mute;
-      } else if (currentVolume < 50) {
-        iconData = Icons.volume_down;
+        text = currentVolume.toString();
+      } else if (leftVerticalDrag == true) {
+        var currentBright = await IjkManager.getSystemBrightness();
+        double target;
+        if (details.delta.dy > 0) {
+          target = currentBright - 0.01;
+        } else {
+          target = currentBright + 0.01;
+        }
+
+        if (target > 1) {
+          target = 1;
+        } else if (target < 0) {
+          target = 0;
+        }
+
+        await IjkManager.setSystemBrightness(target);
+
+        if (target >= 0.66) {
+          iconData = Icons.brightness_high;
+        } else if (target < 0.66 && target > 0.33) {
+          iconData = Icons.brightness_medium;
+        } else {
+          iconData = Icons.brightness_low;
+        }
+
+        text = (target * 100).toStringAsFixed(0);
       } else {
-        iconData = Icons.volume_up;
+        return;
       }
+      var column = Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(
+            iconData,
+            color: Colors.white,
+            size: 25.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: Text(text),
+          ),
+        ],
+      );
 
-      text = currentVolume.toString();
-    } else if (leftVerticalDrag == true) {
-      var currentBright = await IjkManager.getSystemBrightness();
-      double target;
-      if (details.delta.dy > 0) {
-        target = currentBright - 0.03;
-      } else {
-        target = currentBright + 0.03;
-      }
-
-      if (target > 1) {
-        target = 1;
-      } else if (target < 0) {
-        target = 0;
-      }
-
-      await IjkManager.setSystemBrightness(target);
-
-      if (target >= 0.66) {
-        iconData = Icons.brightness_high;
-      } else if (target < 0.66 && target > 0.33) {
-        iconData = Icons.brightness_medium;
-      } else {
-        iconData = Icons.brightness_low;
-      }
-
-      text = (target * 100).toStringAsFixed(0);
-    } else {
-      return;
+      showTooltip(createTooltipWidgetWrapper(column));
     }
-    var column = Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Icon(
-          iconData,
-          color: Colors.white,
-          size: 25.0,
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Text(text),
-        ),
-      ],
-    );
-
-    showTooltip(createTooltipWidgetWrapper(column));
   }
 
   void _onVerticalDragEnd(DragEndDetails details) async {
-    verticalDragging = false;
-    leftVerticalDrag = null;
-    hideTooltip();
-
-    Future.delayed(const Duration(milliseconds: 2000), () {
+    if (MediaQuery.of(context).orientation == Orientation.landscape) {
+      verticalDragging = false;
+      leftVerticalDrag = null;
       hideTooltip();
-    });
+
+      Future.delayed(const Duration(milliseconds: 2000), () {
+        hideTooltip();
+      });
+    }
   }
 
   Future<int> getVolume() async {

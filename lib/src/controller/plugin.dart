@@ -153,4 +153,11 @@ class _IjkPlugin {
     }
     await channel.invokeMethod("setSpeed", speed);
   }
+
+
+  /*
+   *新添加 
+   */
+
+  
 }

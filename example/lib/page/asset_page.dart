@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
-import 'package:ijkplayer_example/i18n/i18n.dart';
+
 
 class AssetPage extends StatefulWidget {
   @override
@@ -9,34 +9,38 @@ class AssetPage extends StatefulWidget {
 
 class _AssetPageState extends State<AssetPage> {
   IjkMediaController controller = IjkMediaController();
+  @override
+  void initState() {
+    super.initState();
+    controller.setAssetDataSource(
+      "assets/video0.mp4",
+      autoPlay: true,
+      
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(currentI18n.assetButton),
-      ),
-      body: ListView(
-        children: <Widget>[
-          AspectRatio(
-            aspectRatio: 1,
-            child: IjkPlayer(
-              mediaController: controller,
-            ),
-          )
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.play_arrow),
-        onPressed: () async {
-          await controller.setAssetDataSource(
-            "assets/sample1.mp4",
-            autoPlay: true,
-          );
-          await controller.pause();
-        },
-      ),
-    );
+       
+        body: ListView(
+          children: <Widget>[
+            AspectRatio(
+              aspectRatio:3/2,
+              child: IjkPlayer(
+                mediaController: controller,
+              ),
+            )
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.play_arrow),
+          onPressed: () async {
+            await controller.pause();
+          },
+        ),
+      );
+   
   }
 
   @override

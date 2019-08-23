@@ -76,6 +76,11 @@ class IjkplayerPlugin(private val registrar: Registrar) : MethodCallHandler {
                 setBrightness(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE)
                 result.success(true)
             }
+
+             "setPhoneCross" -> {
+                setPhoneCross()
+                result.success(true)
+            }
             else -> result.notImplemented()
         }
     }
@@ -147,5 +152,13 @@ class IjkplayerPlugin(private val registrar: Registrar) : MethodCallHandler {
             channel.setMethodCallHandler(IjkplayerPlugin(registrar))
             manager = IjkManager(registrar)
         }
+    }
+
+    //设置手机横屏
+
+ private fun setPhoneCross() {
+//   val window = registrar.activity().window
+
+//      registrar.activity().setRequestedOrientation= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 }

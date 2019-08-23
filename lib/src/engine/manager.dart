@@ -38,6 +38,13 @@ class IjkManager {
       return _globalChannel.invokeMethod("hideSystemVolumeBar");
     }
   }
+/*
+   * 设置手机横屏
+   */
+
+  static Future<void> setPhoneCross() async {
+    await _globalChannel.invokeMethod("setPhoneCross");
+  }
 
   static Future<void> setSystemBrightness(double brightness) async {
     await _globalChannel.invokeMethod("setSystemBrightness", <String, dynamic>{
