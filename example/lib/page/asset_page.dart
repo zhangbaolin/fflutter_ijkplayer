@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fflutter_ijkvideo/fflutter_ijkvideo.dart';
 
-
 class AssetPage extends StatefulWidget {
   @override
   _AssetPageState createState() => _AssetPageState();
@@ -15,32 +14,30 @@ class _AssetPageState extends State<AssetPage> {
     controller.setAssetDataSource(
       "assets/video0.mp4",
       autoPlay: true,
-      
     );
+    
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       
-        body: ListView(
-          children: <Widget>[
-            AspectRatio(
-              aspectRatio:3/2,
-              child: IjkPlayer(
-                mediaController: controller,
-              ),
-            )
-          ],
+      body: Container(
+        child: Center(
+          child: Container(
+            height: 300,
+            child: IjkPlayer(
+            mediaController: controller,
+          ),
+          ),
         ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.play_arrow),
-          onPressed: () async {
-            await controller.pause();
-          },
-        ),
-      );
-   
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.play_arrow),
+        onPressed: () async {
+          await controller.pause();
+        },
+      ),
+    );
   }
 
   @override
