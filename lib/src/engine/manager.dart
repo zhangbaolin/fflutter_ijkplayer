@@ -61,35 +61,35 @@ class IjkManager {
   }
 
   static setLandScape() async {
-    if (Platform.isAndroid) {
-      await SystemChrome.setEnabledSystemUIOverlays([]);
-      await SystemChrome.setPreferredOrientations(
-        [
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ],
-      );
-    } else if (Platform.isIOS) {
-      await setSupportOrientation([
-        DeviceOrientation.landscapeLeft,
-        DeviceOrientation.landscapeRight,
-      ]);
+    // if (Platform.isAndroid) {
+    //   await SystemChrome.setEnabledSystemUIOverlays([]);
+    //   await SystemChrome.setPreferredOrientations(
+    //     [
+    //       DeviceOrientation.landscapeLeft,
+    //       DeviceOrientation.landscapeRight,
+    //     ],
+    //   );
+    // } else if (Platform.isIOS) {
+    //   await setSupportOrientation([
+    //     DeviceOrientation.landscapeLeft,
+    //     DeviceOrientation.landscapeRight,
+    //   ]);
 
-      setCurrentOrientation(DeviceOrientation.landscapeLeft);
-    }
+    //   setCurrentOrientation(DeviceOrientation.landscapeLeft);
+    // }
   }
 
   static setPortrait() async {
-    if (Platform.isAndroid) {
-      await SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-      ]);
-      SystemChrome.restoreSystemUIOverlays();
-      showSystemOverlay();
-    } else if (Platform.isIOS) {
-      await unlockOrientation();
-      setCurrentOrientation(DeviceOrientation.portraitUp);
-    }
+    // if (Platform.isAndroid) {
+    //   await SystemChrome.setPreferredOrientations([
+    //     DeviceOrientation.portraitUp,
+    //   ]);
+    //   SystemChrome.restoreSystemUIOverlays();
+    //   showSystemOverlay();
+    // } else if (Platform.isIOS) {
+    //   await unlockOrientation();
+    //   setCurrentOrientation(DeviceOrientation.portraitUp);
+    // }
   }
 
   static showSystemOverlay() {

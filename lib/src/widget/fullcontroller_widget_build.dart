@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:fflutter_ijkvideo/src/widget/fullcontroller_widget_build.dart';
+import 'package:fflutter_ijkvideo/src/widget/controller_widget_builder.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,17 +9,14 @@ import 'package:fflutter_ijkvideo/src/helper/full_screen_helper.dart';
 import 'package:fflutter_ijkvideo/src/helper/logutil.dart';
 import 'package:fflutter_ijkvideo/src/helper/time_helper.dart';
 import 'package:fflutter_ijkvideo/src/helper/ui_helper.dart';
-import 'package:fflutter_ijkvideo/src/route/fullscreen_route.dart';
 import 'package:fflutter_ijkvideo/src/widget/progress_bar.dart';
-
-part 'full_screen.part.dart';
 
 /// Using mediaController to Construct a Controller UI
 typedef Widget IJKControllerWidgetBuilder(IjkMediaController controller);
 
 /// default create IJK Controller UI
 Widget defaultBuildIjkControllerWidget(IjkMediaController controller) {
-  return DefaultIJKControllerWidget(
+  return FullIJKControllerWidget(
     controller: controller,
     fullscreenControllerWidgetBuilder: (ctl) =>
         buildFullscreenMediaController(ctl),
@@ -29,7 +26,7 @@ Widget defaultBuildIjkControllerWidget(IjkMediaController controller) {
 /// Default Controller Widget
 ///
 /// see [IjkPlayer] and [IJKControllerWidgetBuilder]
-class DefaultIJKControllerWidget extends StatefulWidget {
+class FullIJKControllerWidget extends StatefulWidget {
   final IjkMediaController controller;
 
   /// If [doubleTapPlay] is true, can double tap to play or pause media.
@@ -58,7 +55,7 @@ class DefaultIJKControllerWidget extends StatefulWidget {
   final FullScreenType fullScreenType;
 
   /// The UI of the controller.
-  const DefaultIJKControllerWidget({
+  const FullIJKControllerWidget({
     Key key,
     @required this.controller,
     this.doubleTapPlay = false,
@@ -75,39 +72,9 @@ class DefaultIJKControllerWidget extends StatefulWidget {
   @override
   _DefaultIJKControllerWidgetState createState() =>
       _DefaultIJKControllerWidgetState();
-
-  DefaultIJKControllerWidget copyWith({
-    Key key,
-    IjkMediaController controller,
-    bool doubleTapPlay,
-    bool verticalGesture,
-    bool horizontalGesture,
-    VolumeType volumeType,
-    bool playWillPauseOther,
-    bool currentFullScreenState,
-    bool showFullScreenButton,
-    IJKControllerWidgetBuilder fullscreenControllerWidgetBuilder,
-    FullScreenType fullScreenType,
-  }) {
-    return DefaultIJKControllerWidget(
-      controller: controller ?? this.controller,
-      doubleTapPlay: doubleTapPlay ?? this.doubleTapPlay,
-      fullscreenControllerWidgetBuilder: fullscreenControllerWidgetBuilder ??
-          this.fullscreenControllerWidgetBuilder,
-      horizontalGesture: horizontalGesture ?? this.horizontalGesture,
-      currentFullScreenState:
-          currentFullScreenState ?? this.currentFullScreenState,
-      key: key,
-      volumeType: volumeType ?? this.volumeType,
-      playWillPauseOther: playWillPauseOther ?? this.playWillPauseOther,
-      showFullScreenButton: showFullScreenButton ?? this.showFullScreenButton,
-      verticalGesture: verticalGesture ?? this.verticalGesture,
-      fullScreenType: fullScreenType ?? this.fullScreenType,
-    );
-  }
 }
 
-class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
+class _DefaultIJKControllerWidgetState extends State<FullIJKControllerWidget>
     implements TooltipDelegate {
   IjkMediaController get controller => widget.controller;
 
@@ -153,17 +120,14 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
   @override
   void dispose() {
-    // if (MediaQuery.of(context).orientation == Orientation.portrait) {
-    //   SystemChrome.setPreferredOrientations(
-    //       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    // }
+
     controllerSubscription.cancel();
     stopTimer();
     IjkManager.resetBrightness();
     // 强制竖屏
-
-    // SystemChrome.setPreferredOrientations(
-    //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    print('播放器控制器被销毁了111111111111111111');
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     super.dispose();
   }
 
@@ -225,9 +189,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
     IJKControllerWidgetBuilder fullscreenBuilder =
         widget.fullscreenControllerWidgetBuilder ??
-            (ctx) => FullIJKControllerWidget(
-                  controller: controller,
-                );
+            (ctx) => defaultBuildIjkControllerWidget(controller);
 
     return IconButton(
       color: Colors.white,
@@ -235,7 +197,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       onPressed: () async {
         if (isFull) {
           Navigator.pop(context);
-
+          print('取消全屏了啊');
           // 强制竖屏
           SystemChrome.setPreferredOrientations(
               [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
@@ -250,6 +212,8 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
             fullscreenControllerWidgetBuilder: fullscreenBuilder,
             fullScreenType: widget.fullScreenType,
           );
+
+          print('我要设置全屏了');
         }
       },
     );
@@ -400,8 +364,6 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       var dx =
           UIHelper.globalOffsetToLocal(currentKey, details.globalPosition).dx;
       leftVerticalDrag = dx / width <= 0.5;
-    } else {
-      return;
     }
   }
 
@@ -411,7 +373,7 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
       String text = "";
       IconData iconData = Icons.volume_up;
-
+      print('滑动的详情：${details.globalPosition.dy}');
       if (leftVerticalDrag == false) {
         if (details.delta.dy > 0 && details.globalPosition.dy % 2 == 0) {
           await volumeDown();
@@ -475,8 +437,6 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       );
 
       showTooltip(createTooltipWidgetWrapper(column));
-    } else {
-      return;
     }
   }
 
@@ -489,8 +449,6 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       Future.delayed(const Duration(milliseconds: 2000), () {
         hideTooltip();
       });
-    } else {
-      return;
     }
   }
 
