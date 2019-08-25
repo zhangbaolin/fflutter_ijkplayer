@@ -153,17 +153,11 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
 
   @override
   void dispose() {
-    // if (MediaQuery.of(context).orientation == Orientation.portrait) {
-    //   SystemChrome.setPreferredOrientations(
-    //       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-    // }
+   
     controllerSubscription.cancel();
     stopTimer();
     IjkManager.resetBrightness();
     // 强制竖屏
-
-    // SystemChrome.setPreferredOrientations(
-    //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     super.dispose();
   }
 
@@ -193,9 +187,9 @@ class _DefaultIJKControllerWidgetState extends State<DefaultIJKControllerWidget>
       onHorizontalDragStart: wrapHorizontalGesture(_onHorizontalDragStart),
       onHorizontalDragUpdate: wrapHorizontalGesture(_onHorizontalDragUpdate),
       onHorizontalDragEnd: wrapHorizontalGesture(_onHorizontalDragEnd),
-      onVerticalDragStart: wrapVerticalGesture(_onVerticalDragStart),
-      onVerticalDragUpdate: wrapVerticalGesture(_onVerticalDragUpdate),
-      onVerticalDragEnd: wrapVerticalGesture(_onVerticalDragEnd),
+      // onVerticalDragStart: wrapVerticalGesture(_onVerticalDragStart),
+      // onVerticalDragUpdate: wrapVerticalGesture(_onVerticalDragUpdate),
+      // onVerticalDragEnd: wrapVerticalGesture(_onVerticalDragEnd),
       onTap: onTap,
       key: currentKey,
     );
